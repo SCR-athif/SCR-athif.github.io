@@ -7,599 +7,435 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#07090d;--surface:#0d1117;--surface2:#131920;--surface3:#1a2332;
-  --cyan:#00d4ff;--cyan2:rgba(0,212,255,0.12);--cyan3:rgba(0,212,255,0.06);
-  --red:#ff4757;--red2:rgba(255,71,87,0.12);
-  --green:#00e676;--green2:rgba(0,230,118,0.1);
-  --amber:#ffb300;--amber2:rgba(255,179,0,0.1);
-  --text:#e2e8f0;--muted:#64748b;--border:rgba(255,255,255,0.07);
-  --f-mono:'JetBrains Mono',monospace;--f-head:'Syne',sans-serif;
+  --bg:#07090d;--s1:#0d1117;--s2:#111920;--s3:#1a2332;
+  --cyan:#00d4ff;--ca:rgba(0,212,255,.12);--cb:rgba(0,212,255,.06);
+  --red:#ff4757;--ra:rgba(255,71,87,.12);
+  --green:#00e676;--ga:rgba(0,230,118,.10);
+  --amber:#ffb300;--aa:rgba(255,179,0,.10);
+  --text:#e2e8f0;--muted:#64748b;--border:rgba(255,255,255,.07);
+  --mono:'JetBrains Mono',monospace;--head:'Syne',sans-serif;
+  --max:1280px;--pad:clamp(16px,4vw,56px);
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--f-mono);font-size:13px;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.6;overflow-x:hidden}
+button{font-family:var(--mono);cursor:pointer}
 a{color:inherit;text-decoration:none}
-button{font-family:var(--f-mono);cursor:pointer}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.2)}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,.2)}
 
-/* OUTER WRAP */
-.outer{max-width:820px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);min-height:100vh}
-.wrap{max-width:820px;margin:0 auto;padding:0 28px 80px}
+/* ── LAYOUT ── */
+.page-wrap{width:100%;max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
 
 /* ── NAV ── */
-nav{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 28px;position:sticky;top:0;z-index:50;
-  background:rgba(7,9,13,0.94);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-}
-.logo{font-family:var(--f-head);font-size:15px;font-weight:800;color:var(--cyan);letter-spacing:0.05em}
-.nav-links{display:flex;gap:22px}
-.nav-links a{color:var(--muted);font-size:11px;letter-spacing:0.08em;cursor:pointer;transition:color 0.2s}
+nav{position:sticky;top:0;z-index:100;width:100%;background:rgba(7,9,13,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0 var(--pad);height:58px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--head);font-size:16px;font-weight:800;color:var(--cyan);letter-spacing:.06em;flex-shrink:0}
+.nav-links{display:flex;gap:clamp(14px,2.2vw,30px);list-style:none}
+.nav-links a{color:var(--muted);font-size:11px;letter-spacing:.1em;cursor:pointer;transition:color .2s;white-space:nowrap}
 .nav-links a:hover{color:var(--cyan)}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px;cursor:pointer}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--muted);transition:.3s}
+.mobile-nav{display:none;position:fixed;inset:58px 0 0;background:rgba(7,9,13,.98);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:30px;border-top:1px solid var(--border)}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-family:var(--head);font-size:22px;font-weight:700;color:var(--text);cursor:pointer;letter-spacing:.08em;transition:color .2s}
+.mobile-nav a:hover{color:var(--cyan)}
 
 /* ── HERO ── */
-.hero{padding:76px 0 64px}
-.hero-tag{display:inline-flex;align-items:center;gap:10px;font-size:11px;color:var(--cyan);letter-spacing:0.14em;margin-bottom:22px;opacity:0.8}
-.hero-tag::before{content:'';width:24px;height:1px;background:var(--cyan)}
-.hero-name{
-  font-family:var(--f-head);font-size:clamp(40px,7vw,72px);
-  font-weight:800;line-height:1.0;letter-spacing:-0.02em;color:var(--text);margin-bottom:10px
-}
+.hero{min-height:calc(100vh - 58px);display:flex;align-items:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.35;pointer-events:none}
+.hero-inner{width:100%;max-width:var(--max);margin:0 auto;padding:70px var(--pad) 90px;position:relative;z-index:2}
+.hero-tag{display:inline-flex;align-items:center;gap:10px;font-size:11px;color:var(--cyan);letter-spacing:.18em;margin-bottom:26px;opacity:.8}
+.hero-tag::before{content:'';width:28px;height:1px;background:var(--cyan)}
+.hero-name{font-family:var(--head);font-size:clamp(48px,9vw,110px);font-weight:800;line-height:.92;letter-spacing:-.03em;color:var(--text);margin-bottom:22px}
 .hero-name span{color:var(--cyan)}
-.hero-role{font-size:12px;color:var(--muted);letter-spacing:0.1em;margin-bottom:30px;font-weight:300}
-.typing-line{
-  font-family:var(--f-mono);font-size:clamp(14px,2.5vw,19px);
-  color:var(--text);opacity:0.9;margin-bottom:38px;min-height:30px
-}
-.cursor{display:inline-block;width:2px;height:1em;background:var(--cyan);vertical-align:text-bottom;animation:blink 0.9s step-end infinite}
+.hero-role{font-size:clamp(11px,1.4vw,13px);color:var(--muted);letter-spacing:.12em;margin-bottom:38px;font-weight:300}
+.typing-line{font-size:clamp(15px,2.4vw,22px);color:var(--text);opacity:.9;margin-bottom:48px;min-height:34px}
+.cursor{display:inline-block;width:2px;height:1em;background:var(--cyan);vertical-align:text-bottom;animation:blink .9s step-end infinite}
 @keyframes blink{50%{opacity:0}}
-.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:52px}
-.btn-main{
-  background:var(--cyan);color:#07090d;font-size:11px;
-  font-weight:600;letter-spacing:0.1em;padding:11px 22px;border:none;transition:opacity 0.2s
-}
-.btn-main:hover{opacity:0.85}
-.btn-ghost{
-  background:transparent;color:var(--cyan);font-size:11px;
-  letter-spacing:0.1em;padding:10px 21px;border:1px solid rgba(0,212,255,0.3);transition:all 0.2s
-}
-.btn-ghost:hover{border-color:var(--cyan);background:var(--cyan2)}
-.btn-red{
-  background:transparent;color:var(--red);font-size:11px;
-  letter-spacing:0.1em;padding:10px 21px;border:1px solid rgba(255,71,87,0.3);transition:all 0.2s
-}
-.btn-red:hover{border-color:var(--red);background:var(--red2)}
-
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--border);background:var(--border)}
-.stat{background:var(--surface);padding:22px 16px;text-align:center}
-.stat-n{font-family:var(--f-head);font-size:30px;font-weight:800;color:var(--cyan);line-height:1}
-.stat-l{font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-top:5px}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:64px}
+.btn-p{background:var(--cyan);color:#07090d;font-size:11px;font-weight:600;letter-spacing:.12em;padding:12px 28px;border:none;transition:opacity .2s;white-space:nowrap}
+.btn-p:hover{opacity:.82}
+.btn-o{background:transparent;color:var(--cyan);font-size:11px;letter-spacing:.12em;padding:11px 27px;border:1px solid rgba(0,212,255,.3);transition:all .2s;white-space:nowrap}
+.btn-o:hover{border-color:var(--cyan);background:var(--ca)}
+.btn-d{background:transparent;color:var(--red);font-size:11px;letter-spacing:.12em;padding:11px 27px;border:1px solid rgba(255,71,87,.3);transition:all .2s;white-space:nowrap}
+.btn-d:hover{border-color:var(--red);background:var(--ra)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);max-width:640px}
+.stat{background:var(--s1);padding:24px 20px;text-align:center;transition:background .2s}
+.stat:hover{background:var(--s2)}
+.stat-n{font-family:var(--head);font-size:clamp(26px,3.5vw,38px);font-weight:800;color:var(--cyan);line-height:1}
+.stat-l{font-size:10px;color:var(--muted);letter-spacing:.1em;margin-top:6px}
 
 /* ── SECTION ── */
-.sec{padding:60px 0 0}
-.sec-label{font-size:10px;color:var(--cyan);letter-spacing:0.22em;margin-bottom:10px;opacity:0.65}
-.sec-title{font-family:var(--f-head);font-size:26px;font-weight:800;color:var(--text);margin-bottom:30px;letter-spacing:-0.01em}
+.section{padding:clamp(60px,8vw,110px) 0;border-bottom:1px solid var(--border)}
+.sec-label{font-size:10px;color:var(--cyan);letter-spacing:.24em;margin-bottom:10px;opacity:.65}
+.sec-title{font-family:var(--head);font-size:clamp(22px,3.5vw,38px);font-weight:800;color:var(--text);margin-bottom:38px;letter-spacing:-.02em}
 .sec-title em{color:var(--cyan);font-style:normal}
-.div{height:1px;background:var(--border);margin-top:56px}
 
 /* ── ABOUT ── */
-.bio{font-size:14px;color:rgba(226,232,240,0.72);line-height:1.85;max-width:620px;margin-bottom:30px;font-weight:300}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,70px);align-items:start}
+.bio{font-size:14px;color:rgba(226,232,240,.72);line-height:1.9;font-weight:300}
 .bio strong{color:var(--cyan);font-weight:500}
-.chip-group{margin-bottom:16px}
-.chip-group-label{font-size:10px;color:var(--muted);letter-spacing:0.14em;margin-bottom:8px}
+.chip-group{margin-bottom:18px}
+.chip-group-label{font-size:10px;color:var(--muted);letter-spacing:.14em;margin-bottom:9px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{display:inline-block;font-size:11px;padding:4px 11px;letter-spacing:0.05em;border:1px solid}
-.chip-c{color:var(--cyan);border-color:rgba(0,212,255,0.25);background:var(--cyan3)}
-.chip-r{color:var(--red);border-color:rgba(255,71,87,0.25);background:var(--red2)}
-.chip-g{color:var(--green);border-color:rgba(0,230,118,0.25);background:var(--green2)}
-.chip-a{color:var(--amber);border-color:rgba(255,179,0,0.25);background:var(--amber2)}
+.chip{display:inline-block;font-size:11px;padding:4px 12px;letter-spacing:.05em;border:1px solid;transition:opacity .2s}
+.chip:hover{opacity:.7}
+.chip-c{color:var(--cyan);border-color:rgba(0,212,255,.25);background:var(--cb)}
+.chip-r{color:var(--red);border-color:rgba(255,71,87,.25);background:var(--ra)}
+.chip-g{color:var(--green);border-color:rgba(0,230,118,.25);background:var(--ga)}
+.chip-a{color:var(--amber);border-color:rgba(255,179,0,.25);background:var(--aa)}
 
 /* ── BUG BOUNTY ── */
-.bounty-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:28px}
-.bounty-plat{background:var(--surface);padding:18px;transition:background 0.2s}
-.bounty-plat:hover{background:var(--surface2)}
-.plat-name{font-family:var(--f-head);font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
+.bounty-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.bounty-plat{background:var(--s1);padding:20px;transition:background .2s}
+.bounty-plat:hover{background:var(--s2)}
+.plat-name{font-family:var(--head);font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
 .plat-detail{font-size:11px;color:var(--muted)}
-.sev-bars{display:grid;gap:10px}
-.sev-row{display:flex;align-items:center;gap:12px;font-size:11px}
-.sev-label{width:72px;color:var(--muted);letter-spacing:0.05em}
-.sev-track{flex:1;height:3px;background:var(--surface3)}
+.sev-bars{display:grid;gap:12px;max-width:640px}
+.sev-row{display:flex;align-items:center;gap:14px;font-size:11px}
+.sev-label{width:72px;color:var(--muted);letter-spacing:.05em;flex-shrink:0}
+.sev-track{flex:1;height:3px;background:var(--s3)}
 .sev-fill{height:100%;width:0;transition:width 1.3s cubic-bezier(.4,0,.2,1)}
-.sev-count{width:26px;text-align:right;color:var(--text)}
+.sev-count{width:28px;text-align:right;color:var(--text)}
 .sev-critical .sev-fill{background:var(--red)}
 .sev-high .sev-fill{background:#ff7043}
 .sev-medium .sev-fill{background:var(--amber)}
 .sev-low .sev-fill{background:var(--green)}
 
 /* ── CVE ── */
-.cve-note{font-size:11px;color:var(--muted);margin-bottom:18px;line-height:1.6}
-.cve-search-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-.cve-input{
-  background:var(--surface);border:1px solid var(--border);color:var(--text);
-  font-family:var(--f-mono);font-size:12px;padding:9px 13px;flex:1;min-width:160px;
-  outline:none;transition:border-color 0.2s
-}
-.cve-input:focus{border-color:rgba(0,212,255,0.4)}
+.cve-note{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.75}
+.cve-note strong{color:var(--cyan);font-weight:500}
+.cve-note code{color:var(--amber)}
+.cve-row-controls{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.cve-input{flex:1;min-width:160px;background:var(--s1);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:10px 14px;outline:none;transition:border-color .2s}
+.cve-input:focus{border-color:rgba(0,212,255,.4)}
 .cve-input::placeholder{color:var(--muted)}
-.sev-btn{
-  font-family:var(--f-mono);font-size:10px;padding:8px 13px;
-  border:1px solid var(--border);color:var(--muted);background:var(--surface);
-  cursor:pointer;letter-spacing:0.08em;transition:all 0.2s
-}
-.sev-btn.active,.sev-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan3)}
-.cve-list{display:grid;gap:1px;background:var(--border)}
-.cve-item{
-  background:var(--surface);padding:15px 18px;
-  display:grid;grid-template-columns:92px 1fr 64px;gap:12px;
-  align-items:start;transition:background 0.2s
-}
-.cve-item:hover{background:var(--surface2)}
-.badge{font-size:10px;padding:3px 8px;font-weight:600;letter-spacing:0.06em;text-align:center;border:1px solid}
-.badge-critical{background:rgba(255,71,87,0.12);color:var(--red);border-color:rgba(255,71,87,0.3)}
-.badge-high{background:rgba(255,112,67,0.12);color:#ff7043;border-color:rgba(255,112,67,0.3)}
-.badge-medium{background:rgba(255,179,0,0.12);color:var(--amber);border-color:rgba(255,179,0,0.3)}
-.badge-low{background:rgba(0,230,118,0.1);color:var(--green);border-color:rgba(0,230,118,0.3)}
-.cve-id{font-family:var(--f-head);font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:4px}
+.f-btn{font-family:var(--mono);font-size:10px;padding:10px 14px;border:1px solid var(--border);color:var(--muted);background:var(--s1);cursor:pointer;letter-spacing:.08em;transition:all .2s;white-space:nowrap}
+.f-btn.active,.f-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--ca)}
+.cve-list{display:grid;gap:1px;background:var(--border);border:1px solid var(--border)}
+.cve-row{background:var(--s1);padding:16px 20px;display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:start;transition:background .2s}
+.cve-row:hover{background:var(--s2)}
+.badge{font-size:10px;padding:3px 9px;font-weight:600;letter-spacing:.06em;text-align:center;border:1px solid;white-space:nowrap}
+.badge-critical{background:rgba(255,71,87,.12);color:var(--red);border-color:rgba(255,71,87,.3)}
+.badge-high{background:rgba(255,112,67,.12);color:#ff7043;border-color:rgba(255,112,67,.3)}
+.badge-medium{background:rgba(255,179,0,.12);color:var(--amber);border-color:rgba(255,179,0,.3)}
+.badge-low{background:rgba(0,230,118,.10);color:var(--green);border-color:rgba(0,230,118,.3)}
+.cve-id{font-family:var(--head);font-size:12px;font-weight:700;color:var(--cyan);margin-bottom:4px}
 .cve-desc{font-size:12px;color:var(--muted);line-height:1.65;font-weight:300}
-.cve-gh-link{font-size:10px;color:var(--cyan);opacity:0.6;cursor:pointer;letter-spacing:0.06em;transition:opacity 0.2s;text-align:right}
-.cve-gh-link:hover{opacity:1}
-.cve-empty{padding:32px;text-align:center;color:var(--muted);font-size:12px;background:var(--surface);line-height:1.8}
+.cve-link-btn{font-size:10px;color:var(--cyan);opacity:.55;cursor:pointer;letter-spacing:.06em;transition:opacity .2s;background:none;border:none;white-space:nowrap;align-self:center}
+.cve-link-btn:hover{opacity:1}
+.cve-empty{background:var(--s1);padding:40px;text-align:center;color:var(--muted);font-size:12px;line-height:1.9}
 
 /* ── PROJECTS ── */
-.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
-.proj{background:var(--surface);padding:22px;border-left:2px solid transparent;transition:border-color 0.2s,background 0.2s}
-.proj:hover{border-left-color:var(--cyan);background:var(--surface2)}
-.proj-kind{font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:9px}
-.proj-title{font-family:var(--f-head);font-size:15px;font-weight:700;color:var(--text);margin-bottom:9px}
-.proj-desc{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:13px;font-weight:300}
-.proj-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px}
-.proj-tag{font-size:10px;padding:2px 8px;border:1px solid rgba(0,212,255,0.2);color:var(--cyan)}
-.proj-link{font-size:11px;color:var(--cyan);opacity:0.65;letter-spacing:0.06em;cursor:pointer;transition:opacity 0.2s;background:none;border:none;padding:0}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.proj{background:var(--s1);padding:26px;border-left:2px solid transparent;transition:border-color .2s,background .2s;display:flex;flex-direction:column}
+.proj:hover{border-left-color:var(--cyan);background:var(--s2)}
+.proj-kind{font-size:10px;color:var(--muted);letter-spacing:.14em;margin-bottom:10px}
+.proj-title{font-family:var(--head);font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px}
+.proj-desc{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:14px;font-weight:300;flex:1}
+.proj-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.proj-tag{font-size:10px;padding:2px 9px;border:1px solid rgba(0,212,255,.2);color:var(--cyan)}
+.proj-link{font-size:11px;color:var(--cyan);opacity:.6;letter-spacing:.06em;cursor:pointer;transition:opacity .2s;background:none;border:none;padding:0;text-align:left}
 .proj-link:hover{opacity:1}
 
 /* ── BLOG ── */
-.blog-list{display:grid;gap:1px;background:var(--border)}
-.blog-item{
-  background:var(--surface);padding:20px 22px;
-  display:grid;grid-template-columns:1fr auto;gap:16px;
-  align-items:center;transition:background 0.2s;cursor:pointer
-}
-.blog-item:hover{background:var(--surface2)}
-.blog-date{font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:7px}
-.blog-title{font-family:var(--f-head);font-size:14px;font-weight:700;color:var(--text);margin-bottom:7px;line-height:1.35}
+.blog-list{display:grid;gap:1px;background:var(--border);border:1px solid var(--border)}
+.blog-row{background:var(--s1);padding:24px 26px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;cursor:pointer;transition:background .2s}
+.blog-row:hover{background:var(--s2)}
+.blog-date{font-size:10px;color:var(--muted);letter-spacing:.1em;margin-bottom:8px}
+.blog-title{font-family:var(--head);font-size:clamp(13px,1.8vw,16px);font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.35}
 .blog-tags{display:flex;gap:5px;flex-wrap:wrap}
-.blog-tag{font-size:10px;color:var(--muted);border:1px solid var(--border);padding:2px 7px}
-.blog-arrow{font-size:18px;color:var(--cyan);opacity:0.45;transition:opacity 0.2s;flex-shrink:0}
-.blog-item:hover .blog-arrow{opacity:1}
+.blog-tag{font-size:10px;color:var(--muted);border:1px solid var(--border);padding:2px 8px}
+.blog-arrow{font-size:20px;color:var(--cyan);opacity:.4;transition:opacity .2s;flex-shrink:0}
+.blog-row:hover .blog-arrow{opacity:1}
 
 /* ── TERMINAL ── */
-.terminal{background:#010b14;border:1px solid rgba(0,212,255,0.14);overflow:hidden}
-.term-bar{
-  background:#0a1520;padding:11px 16px;display:flex;align-items:center;gap:7px;
-  border-bottom:1px solid rgba(0,212,255,0.08)
-}
-.tdot{width:9px;height:9px;border-radius:50%}
-.term-title{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-left:6px}
-.term-body{padding:18px;min-height:230px;max-height:340px;overflow-y:auto;scroll-behavior:smooth}
+.terminal{background:#010b14;border:1px solid rgba(0,212,255,.14);overflow:hidden}
+.term-bar{background:#0a1520;padding:12px 18px;display:flex;align-items:center;gap:7px;border-bottom:1px solid rgba(0,212,255,.08)}
+.tdot{width:10px;height:10px;border-radius:50%}
+.term-label{font-size:11px;color:var(--muted);letter-spacing:.1em;margin-left:6px}
+.term-body{padding:20px;min-height:250px;max-height:380px;overflow-y:auto;scroll-behavior:smooth}
 .term-body::-webkit-scrollbar{width:2px}
-.term-body::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.15)}
-.t-line{margin-bottom:3px;line-height:1.65;word-break:break-all}
+.term-body::-webkit-scrollbar-thumb{background:rgba(0,212,255,.15)}
+.t-line{margin-bottom:4px;line-height:1.7;word-break:break-all}
 .t-prompt{color:var(--cyan)}
 .t-muted{color:var(--muted)}
 .t-white{color:var(--text)}
 .t-red{color:var(--red)}
 .t-green{color:var(--green)}
 .t-amber{color:var(--amber)}
-.term-input-row{
-  display:flex;align-items:center;gap:9px;padding:11px 16px;
-  border-top:1px solid rgba(0,212,255,0.07)
-}
-.term-inp{
-  background:transparent;border:none;outline:none;
-  color:var(--text);font-family:var(--f-mono);font-size:13px;flex:1;caret-color:var(--cyan)
-}
-.term-hint{font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-top:12px;opacity:0.55;line-height:1.6}
+.term-input-row{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid rgba(0,212,255,.07)}
+.term-inp{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:13px;flex:1;caret-color:var(--cyan)}
+.term-hint{font-size:11px;color:var(--muted);letter-spacing:.06em;margin-top:12px;opacity:.55;line-height:1.7}
+.term-hint span{color:var(--cyan)}
 
 /* ── CONTACT ── */
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
-.contact-col{background:var(--surface);padding:26px}
-.form-field{margin-bottom:15px}
-.form-label{font-size:10px;color:var(--muted);letter-spacing:0.14em;display:block;margin-bottom:7px}
-.form-inp{
-  width:100%;background:var(--surface2);border:1px solid var(--border);
-  color:var(--text);font-family:var(--f-mono);font-size:12px;padding:10px 13px;
-  outline:none;transition:border-color 0.2s
-}
-.form-inp:focus{border-color:rgba(0,212,255,0.4)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+.contact-col{background:var(--s1);padding:clamp(22px,3.5vw,36px)}
+.form-field{margin-bottom:16px}
+.form-label{font-size:10px;color:var(--muted);letter-spacing:.14em;display:block;margin-bottom:7px}
+.form-inp{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:11px 14px;outline:none;transition:border-color .2s}
+.form-inp:focus{border-color:rgba(0,212,255,.4)}
 .form-inp::placeholder{color:var(--muted)}
-textarea.form-inp{resize:vertical;min-height:95px}
-.btn-submit{
-  background:var(--cyan);color:#07090d;font-family:var(--f-mono);font-size:11px;
-  font-weight:600;letter-spacing:0.1em;padding:11px 20px;border:none;
-  cursor:pointer;width:100%;margin-top:5px;transition:opacity 0.2s
-}
-.btn-submit:hover{opacity:0.85}
-.contact-info{display:grid;gap:10px}
-.c-info-item{padding:13px;border:1px solid var(--border);background:var(--surface2)}
-.c-info-label{font-size:10px;color:var(--muted);letter-spacing:0.12em;margin-bottom:5px}
-.c-info-val{font-size:12px;color:var(--text)}
-.socials{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.social-btn{
-  font-size:10px;padding:7px 13px;border:1px solid var(--border);
-  color:var(--muted);cursor:pointer;letter-spacing:0.08em;transition:all 0.2s;background:transparent
-}
-.social-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan3)}
+textarea.form-inp{resize:vertical;min-height:105px}
+.btn-send{width:100%;background:var(--cyan);color:#07090d;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;padding:13px 20px;border:none;cursor:pointer;margin-top:4px;transition:opacity .2s}
+.btn-send:hover{opacity:.84}
+.info-list{display:grid;gap:10px;margin-bottom:18px}
+.info-item{padding:13px 16px;border:1px solid var(--border);background:var(--s2)}
+.info-lbl{font-size:10px;color:var(--muted);letter-spacing:.12em;margin-bottom:5px}
+.info-val{font-size:12px;color:var(--text)}
+.socials{display:flex;gap:8px;flex-wrap:wrap}
+.social-btn{font-size:10px;padding:8px 14px;border:1px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;letter-spacing:.08em;transition:all .2s}
+.social-btn:hover{border-color:var(--cyan);color:var(--cyan);background:var(--ca)}
 
 /* ── FOOTER ── */
-footer{
-  margin-top:64px;padding-top:22px;border-top:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:11px;color:var(--muted)
-}
-footer span.hl{color:var(--cyan)}
+footer{padding:clamp(24px,4vw,44px) var(--pad);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);flex-wrap:wrap;gap:10px;max-width:var(--max);margin:0 auto}
+footer .hl{color:var(--cyan)}
 
 /* ── RESPONSIVE ── */
-@media(max-width:580px){
-  .stats-row{grid-template-columns:1fr 1fr}
-  .projects-grid{grid-template-columns:1fr}
-  .bounty-grid{grid-template-columns:1fr 1fr}
+@media(max-width:960px){
+  .about-grid{grid-template-columns:1fr}
   .contact-grid{grid-template-columns:1fr}
-  .cve-item{grid-template-columns:80px 1fr}
-  .cve-gh-link{display:none}
-  .nav-links{gap:14px}
-  .wrap{padding:0 16px 60px}
-  nav{padding:16px}
+  .stats-grid{grid-template-columns:repeat(2,1fr);max-width:100%}
 }
-@media(max-width:380px){
+@media(max-width:660px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .projects-grid{grid-template-columns:1fr}
+  .cve-row{grid-template-columns:80px 1fr}
+  .cve-link-btn{display:none}
+  .blog-row{grid-template-columns:1fr}
+  .blog-arrow{display:none}
+  .hero-ctas{flex-direction:column}
+  .btn-p,.btn-o,.btn-d{width:100%;text-align:center}
+}
+@media(max-width:420px){
+  .stats-grid{grid-template-columns:1fr 1fr}
   .bounty-grid{grid-template-columns:1fr}
-  .nav-links a:nth-child(n+4){display:none}
 }
+@media(min-width:1440px){:root{--max:1380px}}
 </style>
 </head>
 <body>
 
-<div class="outer">
-
-<!-- ═══ NAV ═══ -->
+<!-- NAV -->
 <nav>
-  <div class="logo">MOHAMMED ATHIF</div>
-  <div class="nav-links">
-    <a onclick="scroll2('about')">about</a>
-    <a onclick="scroll2('bounty')">bounty</a>
-    <a onclick="scroll2('cves')">cves</a>
-    <a onclick="scroll2('projects')">projects</a>
-    <a onclick="scroll2('terminal')">terminal</a>
-    <a onclick="scroll2('contact')">contact</a>
+  <div class="nav-inner">
+    <div class="logo">M.ATHIF</div>
+    <ul class="nav-links">
+      <li><a onclick="go('about')">about</a></li>
+      <li><a onclick="go('bounty')">bounty</a></li>
+      <li><a onclick="go('cves')">cves</a></li>
+      <li><a onclick="go('projects')">projects</a></li>
+      <li><a onclick="go('blog')">writeups</a></li>
+      <li><a onclick="go('terminal')">terminal</a></li>
+      <li><a onclick="go('contact')">contact</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
   </div>
 </nav>
+<div class="mobile-nav" id="mob">
+  <a onclick="go('about');closeMob()">about</a>
+  <a onclick="go('bounty');closeMob()">bounty</a>
+  <a onclick="go('cves');closeMob()">cves</a>
+  <a onclick="go('projects');closeMob()">projects</a>
+  <a onclick="go('blog');closeMob()">writeups</a>
+  <a onclick="go('terminal');closeMob()">terminal</a>
+  <a onclick="go('contact');closeMob()">contact</a>
+</div>
 
-<div class="wrap">
-
-<!-- ═══ HERO ═══ -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">cybersecurity researcher</div>
-  <div class="hero-name">Mohammed<br><span>Athif</span></div>
-  <div class="hero-role">Bug Bounty Hunter &nbsp;·&nbsp; CVE Contributor &nbsp;·&nbsp; Security Researcher</div>
-  <div class="typing-line" id="typing-el"><span class="cursor"></span></div>
-  <div class="hero-ctas">
-    <button class="btn-main" onclick="scroll2('projects')">View Research</button>
-    <button class="btn-ghost" onclick="alert('Add your resume PDF link here')">Download Resume</button>
-    <button class="btn-red" onclick="scroll2('contact')">Contact Me</button>
-  </div>
-  <div class="stats-row">
-    <div class="stat"><div class="stat-n" data-t="87">0</div><div class="stat-l">Vulns Found</div></div>
-    <div class="stat"><div class="stat-n" data-t="12">0</div><div class="stat-l">CVEs Published</div></div>
-    <div class="stat"><div class="stat-n" data-t="34">0</div><div class="stat-l">Programs Tested</div></div>
-    <div class="stat"><div class="stat-n" data-t="5">0</div><div class="stat-l">Hall of Fames</div></div>
-  </div>
-</section>
-
-<div class="div"></div>
-
-<!-- ═══ ABOUT ═══ -->
-<section class="sec" id="about">
-  <div class="sec-label">// 01 about</div>
-  <div class="sec-title">Offensive Security <em>Expert</em></div>
-  <p class="bio">
-    I'm <strong>Mohammed Athif</strong>, a cybersecurity researcher focused on
-    <strong>offensive security</strong> and vulnerability research. I uncover critical
-    attack surfaces — from IDOR chains to OAuth bypasses — across major platforms and
-    bug bounty programs. Every CVE I publish and every bounty I earn advances the
-    mission of a <strong>safer web.</strong>
-  </p>
-  <div class="chip-group">
-    <div class="chip-group-label">// web security</div>
-    <div class="chips">
-      <span class="chip chip-r">XSS</span><span class="chip chip-r">SQLi</span>
-      <span class="chip chip-r">IDOR</span><span class="chip chip-r">SSRF</span>
-      <span class="chip chip-r">CSRF</span><span class="chip chip-r">RCE</span>
-      <span class="chip chip-r">XXE</span><span class="chip chip-r">SSTI</span>
-      <span class="chip chip-r">LFI</span><span class="chip chip-r">OAuth Bypass</span>
+  <div class="hero-inner">
+    <div class="hero-tag">cybersecurity researcher</div>
+    <div class="hero-name">Mohammed<br><span>Athif</span></div>
+    <div class="hero-role">Bug Bounty Hunter &nbsp;·&nbsp; CVE Contributor &nbsp;·&nbsp; Security Researcher</div>
+    <div class="typing-line" id="tel"><span class="cursor"></span></div>
+    <div class="hero-ctas">
+      <button class="btn-p" onclick="go('projects')">View Research</button>
+      <button class="btn-o">Download Resume</button>
+      <button class="btn-d" onclick="go('contact')">Contact Me</button>
     </div>
-  </div>
-  <div class="chip-group">
-    <div class="chip-group-label">// tools</div>
-    <div class="chips">
-      <span class="chip chip-c">Burp Suite</span><span class="chip chip-c">Nmap</span>
-      <span class="chip chip-c">FFUF</span><span class="chip chip-c">Metasploit</span>
-      <span class="chip chip-c">Nuclei</span><span class="chip chip-c">SQLMap</span>
-      <span class="chip chip-c">Gobuster</span><span class="chip chip-c">Wireshark</span>
-    </div>
-  </div>
-  <div class="chip-group">
-    <div class="chip-group-label">// languages &amp; systems</div>
-    <div class="chips">
-      <span class="chip chip-g">Python</span><span class="chip chip-g">JavaScript</span>
-      <span class="chip chip-g">Bash</span><span class="chip chip-g">Go</span>
-      <span class="chip chip-a">Linux</span><span class="chip chip-a">Kali</span>
-      <span class="chip chip-a">AWS</span><span class="chip chip-a">Docker</span>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-n" data-t="87">0</div><div class="stat-l">Vulns Found</div></div>
+      <div class="stat"><div class="stat-n" data-t="12">0</div><div class="stat-l">CVEs Published</div></div>
+      <div class="stat"><div class="stat-n" data-t="34">0</div><div class="stat-l">Programs Tested</div></div>
+      <div class="stat"><div class="stat-n" data-t="5">0</div><div class="stat-l">Hall of Fames</div></div>
     </div>
   </div>
 </section>
 
-<div class="div"></div>
-
-<!-- ═══ BUG BOUNTY ═══ -->
-<section class="sec" id="bounty">
-  <div class="sec-label">// 02 bug bounty</div>
-  <div class="sec-title">Bounty <em>Platforms</em></div>
-  <div class="bounty-grid">
-    <div class="bounty-plat"><div class="plat-name">HackerOne</div><div class="plat-detail">48 reports · Top 1000</div></div>
-    <div class="bounty-plat"><div class="plat-name">Bugcrowd</div><div class="plat-detail">23 reports · Trusted</div></div>
-    <div class="bounty-plat"><div class="plat-name">Intigriti</div><div class="plat-detail">11 reports · Active</div></div>
-    <div class="bounty-plat"><div class="plat-name">Synack</div><div class="plat-detail">5 reports · Vetted</div></div>
-    <div class="bounty-plat"><div class="plat-name">YesWeHack</div><div class="plat-detail">8 reports · Active</div></div>
-    <div class="bounty-plat" style="display:flex;align-items:center;justify-content:center;opacity:0.3">
-      <div style="font-size:11px;letter-spacing:0.1em">+ more</div>
-    </div>
-  </div>
-  <div class="sev-bars" id="sev-bars">
-    <div class="sev-row sev-critical">
-      <span class="sev-label">Critical</span>
-      <div class="sev-track"><div class="sev-fill" data-w="27"></div></div>
-      <span class="sev-count">23</span>
-    </div>
-    <div class="sev-row sev-high">
-      <span class="sev-label">High</span>
-      <div class="sev-track"><div class="sev-fill" data-w="37"></div></div>
-      <span class="sev-count">31</span>
-    </div>
-    <div class="sev-row sev-medium">
-      <span class="sev-label">Medium</span>
-      <div class="sev-track"><div class="sev-fill" data-w="28"></div></div>
-      <span class="sev-count">24</span>
-    </div>
-    <div class="sev-row sev-low">
-      <span class="sev-label">Low</span>
-      <div class="sev-track"><div class="sev-fill" data-w="8"></div></div>
-      <span class="sev-count">7</span>
-    </div>
-  </div>
-</section>
-
-<div class="div"></div>
-
-<!-- ═══ CVE ═══ -->
-<section class="sec" id="cves">
-  <div class="sec-label">// 03 cve database</div>
-  <div class="sec-title">Published <em>CVEs</em></div>
-  <p class="cve-note">
-    Fetching live from <strong style="color:var(--cyan)">github.com/SCR-athif/CVE</strong> —
-    only your real published CVEs are shown here.<br>
-    Add <code style="color:var(--amber)">CVE-XXXX-XXXXX.md</code> files to that repo to populate this section.
-  </p>
-  <div class="cve-search-row">
-    <input class="cve-input" id="cve-search" placeholder="Search CVE ID or description..." oninput="filterCVEs()">
-    <button class="sev-btn active" onclick="setCVEFilter(this,'all')">All</button>
-    <button class="sev-btn" onclick="setCVEFilter(this,'critical')">Critical</button>
-    <button class="sev-btn" onclick="setCVEFilter(this,'high')">High</button>
-    <button class="sev-btn" onclick="setCVEFilter(this,'medium')">Medium</button>
-    <button class="sev-btn" onclick="setCVEFilter(this,'low')">Low</button>
-  </div>
-  <div class="cve-list" id="cve-list">
-    <div class="cve-empty" id="cve-loading">Fetching your CVEs from GitHub...</div>
-  </div>
-</section>
-
-<div class="div"></div>
-
-<!-- ═══ PROJECTS ═══ -->
-<section class="sec" id="projects">
-  <div class="sec-label">// 04 projects &amp; research</div>
-  <div class="sec-title">Security <em>Tools</em></div>
-  <div class="projects-grid">
-
-    <div class="proj">
-      <div class="proj-kind">TOOL</div>
-      <div class="proj-title">AuthBypass Framework</div>
-      <div class="proj-desc">OAuth 2.0 and JWT misconfiguration toolkit with automated token forging and scope escalation modules.</div>
-      <div class="proj-tags"><span class="proj-tag">OAuth</span><span class="proj-tag">JWT</span><span class="proj-tag">Python</span></div>
-      <button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button>
-    </div>
-
-    <div class="proj">
-      <div class="proj-kind">TOOL</div>
-      <div class="proj-title">SubEnum Pro</div>
-      <div class="proj-desc">High-performance subdomain enumeration with CT log mining and automated subdomain takeover detection.</div>
-      <div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Recon</span><span class="proj-tag">DNS</span></div>
-      <button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button>
-    </div>
-
-    <div class="proj">
-      <div class="proj-kind">RESEARCH</div>
-      <div class="proj-title">SSRF → RCE Chain PoC</div>
-      <div class="proj-desc">Proof-of-concept for critical SSRF-to-RCE in cloud-hosted apps via chunked encoding WAF bypass.</div>
-      <div class="proj-tags"><span class="proj-tag">SSRF</span><span class="proj-tag">RCE</span><span class="proj-tag">WAF Bypass</span></div>
-      <button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button>
-    </div>
-
-    <div class="proj">
-      <div class="proj-kind">RESEARCH</div>
-      <div class="proj-title">XSS Filter Evasion Lab</div>
-      <div class="proj-desc">DOM XSS research: prototype pollution chaining, mutation XSS in React and Angular frameworks.</div>
-      <div class="proj-tags"><span class="proj-tag">XSS</span><span class="proj-tag">DOM</span><span class="proj-tag">JavaScript</span></div>
-      <button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button>
-    </div>
-
-    <div class="proj">
-      <div class="proj-kind">TOOL</div>
-      <div class="proj-title">APIHunter</div>
-      <div class="proj-desc">Automated scanner for hidden API endpoints, BOLA/IDOR, mass assignment, and rate limit bypasses.</div>
-      <div class="proj-tags"><span class="proj-tag">IDOR</span><span class="proj-tag">API</span><span class="proj-tag">Python</span></div>
-      <button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button>
-    </div>
-
-    <div class="proj">
-      <div class="proj-kind">TOOL</div>
-      <div class="proj-title">Cloud Misconfiguration Mapper</div>
-      <div class="proj-desc">AWS S3, IAM, and Elasticsearch misconfiguration scanner across major cloud providers.</div>
-      <div class="proj-tags"><span class="proj-tag">AWS</span><span class="proj-tag">Cloud</span><span class="proj-tag">OSINT</span></div>
-      <button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button>
-    </div>
-
-  </div>
-</section>
-
-<div class="div"></div>
-
-<!-- ═══ BLOG ═══ -->
-<section class="sec" id="blog">
-  <div class="sec-label">// 05 writeups</div>
-  <div class="sec-title">Research <em>Writeups</em></div>
-  <div class="blog-list">
-
-    <div class="blog-item">
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="page-wrap">
+    <div class="sec-label">// 01 about</div>
+    <div class="sec-title">Offensive Security <em>Expert</em></div>
+    <div class="about-grid">
+      <p class="bio">
+        I'm <strong>Mohammed Athif</strong>, a cybersecurity researcher focused on
+        <strong>offensive security</strong> and vulnerability research. I uncover critical
+        attack surfaces — from IDOR chains to OAuth bypasses — across major platforms and
+        bug bounty programs.<br><br>
+        Every CVE I publish and every bounty I earn advances the mission of a
+        <strong>safer web.</strong>
+      </p>
       <div>
-        <div class="blog-date">Mar 2025 · 12 min read</div>
-        <div class="blog-title">Chaining SSRF + IDOR to Achieve Full Account Takeover</div>
-        <div class="blog-tags"><span class="blog-tag">SSRF</span><span class="blog-tag">IDOR</span><span class="blog-tag">Account Takeover</span></div>
-      </div>
-      <div class="blog-arrow">→</div>
-    </div>
-
-    <div class="blog-item">
-      <div>
-        <div class="blog-date">Jan 2025 · 8 min read</div>
-        <div class="blog-title">DOM XSS via Prototype Pollution in Angular 15</div>
-        <div class="blog-tags"><span class="blog-tag">XSS</span><span class="blog-tag">Angular</span><span class="blog-tag">PoC</span></div>
-      </div>
-      <div class="blog-arrow">→</div>
-    </div>
-
-    <div class="blog-item">
-      <div>
-        <div class="blog-date">Nov 2024 · 15 min read</div>
-        <div class="blog-title">Breaking OAuth: From Misconfiguration to Admin RCE</div>
-        <div class="blog-tags"><span class="blog-tag">OAuth</span><span class="blog-tag">RCE</span><span class="blog-tag">Privilege Escalation</span></div>
-      </div>
-      <div class="blog-arrow">→</div>
-    </div>
-
-    <div class="blog-item">
-      <div>
-        <div class="blog-date">Sep 2024 · 10 min read</div>
-        <div class="blog-title">Bug Bounty Recon Methodology: From Zero to Critical</div>
-        <div class="blog-tags"><span class="blog-tag">Methodology</span><span class="blog-tag">Recon</span><span class="blog-tag">Tutorial</span></div>
-      </div>
-      <div class="blog-arrow">→</div>
-    </div>
-
-    <div class="blog-item">
-      <div>
-        <div class="blog-date">Jul 2024 · 6 min read</div>
-        <div class="blog-title">Mass Assignment Flaw: Taking Over 10,000 Accounts</div>
-        <div class="blog-tags"><span class="blog-tag">Mass Assignment</span><span class="blog-tag">API Security</span></div>
-      </div>
-      <div class="blog-arrow">→</div>
-    </div>
-
-  </div>
-</section>
-
-<div class="div"></div>
-
-<!-- ═══ TERMINAL ═══ -->
-<section class="sec" id="terminal">
-  <div class="sec-label">// 06 interactive terminal</div>
-  <div class="sec-title">Live <em>Shell</em></div>
-  <div class="terminal">
-    <div class="term-bar">
-      <div class="tdot" style="background:#ff4757"></div>
-      <div class="tdot" style="background:#ffb300"></div>
-      <div class="tdot" style="background:#00e676"></div>
-      <span class="term-title">athif@seclab — bash</span>
-    </div>
-    <div class="term-body" id="term-body"></div>
-    <div class="term-input-row">
-      <span class="t-prompt">athif@seclab:~$&nbsp;</span>
-      <input class="term-inp" id="term-input" placeholder="type a command..." autocomplete="off" spellcheck="false">
-    </div>
-  </div>
-  <div class="term-hint">
-    available: &nbsp;
-    <span style="color:var(--cyan)">help</span> &nbsp;·&nbsp;
-    <span style="color:var(--cyan)">whoami</span> &nbsp;·&nbsp;
-    <span style="color:var(--cyan)">skills</span> &nbsp;·&nbsp;
-    <span style="color:var(--cyan)">cves</span> &nbsp;·&nbsp;
-    <span style="color:var(--cyan)">bounties</span> &nbsp;·&nbsp;
-    <span style="color:var(--cyan)">contact</span> &nbsp;·&nbsp;
-    <span style="color:var(--cyan)">clear</span>
-  </div>
-</section>
-
-<div class="div"></div>
-
-<!-- ═══ CONTACT ═══ -->
-<section class="sec" id="contact">
-  <div class="sec-label">// 07 contact</div>
-  <div class="sec-title">Get In <em>Touch</em></div>
-  <div class="contact-grid">
-    <div class="contact-col">
-      <div class="form-field">
-        <label class="form-label">name</label>
-        <input class="form-inp" id="f-name" placeholder="Your name" type="text">
-      </div>
-      <div class="form-field">
-        <label class="form-label">email</label>
-        <input class="form-inp" id="f-email" placeholder="your@email.com" type="email">
-      </div>
-      <div class="form-field">
-        <label class="form-label">message</label>
-        <textarea class="form-inp" id="f-msg" placeholder="Describe your inquiry..."></textarea>
-      </div>
-      <button class="btn-submit" id="submit-btn" onclick="handleSend()">Send Message →</button>
-    </div>
-    <div class="contact-col">
-      <div class="contact-info">
-        <div class="c-info-item">
-          <div class="c-info-label">email</div>
-          <div class="c-info-val">athif@secresearch.io</div>
+        <div class="chip-group">
+          <div class="chip-group-label">// web security</div>
+          <div class="chips">
+            <span class="chip chip-r">XSS</span><span class="chip chip-r">SQLi</span><span class="chip chip-r">IDOR</span>
+            <span class="chip chip-r">SSRF</span><span class="chip chip-r">CSRF</span><span class="chip chip-r">RCE</span>
+            <span class="chip chip-r">XXE</span><span class="chip chip-r">SSTI</span><span class="chip chip-r">LFI</span>
+            <span class="chip chip-r">OAuth</span>
+          </div>
         </div>
-        <div class="c-info-item">
-          <div class="c-info-label">github</div>
-          <div class="c-info-val">github.com/SCR-athif</div>
+        <div class="chip-group">
+          <div class="chip-group-label">// tools</div>
+          <div class="chips">
+            <span class="chip chip-c">Burp Suite</span><span class="chip chip-c">Nmap</span>
+            <span class="chip chip-c">FFUF</span><span class="chip chip-c">Metasploit</span>
+            <span class="chip chip-c">Nuclei</span><span class="chip chip-c">SQLMap</span>
+            <span class="chip chip-c">Gobuster</span><span class="chip chip-c">Wireshark</span>
+          </div>
         </div>
-        <div class="c-info-item">
-          <div class="c-info-label">response time</div>
-          <div class="c-info-val">Within 24 hours</div>
-        </div>
-        <div class="c-info-item">
-          <div class="c-info-label">pgp key</div>
-          <div class="c-info-val">keybase.io/athif</div>
+        <div class="chip-group">
+          <div class="chip-group-label">// languages &amp; systems</div>
+          <div class="chips">
+            <span class="chip chip-g">Python</span><span class="chip chip-g">JavaScript</span>
+            <span class="chip chip-g">Bash</span><span class="chip chip-g">Go</span>
+            <span class="chip chip-a">Linux</span><span class="chip chip-a">Kali</span>
+            <span class="chip chip-a">AWS</span><span class="chip chip-a">Docker</span>
+          </div>
         </div>
       </div>
-      <div class="socials">
-        <button class="social-btn" onclick="window.open('https://github.com/SCR-athif','_blank')">GitHub</button>
-        <button class="social-btn">LinkedIn</button>
-        <button class="social-btn">HackerOne</button>
-        <button class="social-btn">Twitter / X</button>
+    </div>
+  </div>
+</section>
+
+<!-- BUG BOUNTY -->
+<section class="section" id="bounty">
+  <div class="page-wrap">
+    <div class="sec-label">// 02 bug bounty</div>
+    <div class="sec-title">Bounty <em>Platforms</em></div>
+    <div class="bounty-grid">
+      <div class="bounty-plat"><div class="plat-name">HackerOne</div><div class="plat-detail">48 reports · Top 1000</div></div>
+      <div class="bounty-plat"><div class="plat-name">Bugcrowd</div><div class="plat-detail">23 reports · Trusted</div></div>
+      <div class="bounty-plat"><div class="plat-name">Intigriti</div><div class="plat-detail">11 reports · Active</div></div>
+      <div class="bounty-plat"><div class="plat-name">Synack</div><div class="plat-detail">5 reports · Vetted</div></div>
+      <div class="bounty-plat"><div class="plat-name">YesWeHack</div><div class="plat-detail">8 reports · Active</div></div>
+      <div class="bounty-plat" style="display:flex;align-items:center;justify-content:center;opacity:.3"><span style="font-size:11px;letter-spacing:.1em">+ more</span></div>
+    </div>
+    <div class="sev-bars">
+      <div class="sev-row sev-critical"><span class="sev-label">Critical</span><div class="sev-track"><div class="sev-fill" data-w="27"></div></div><span class="sev-count">23</span></div>
+      <div class="sev-row sev-high"><span class="sev-label">High</span><div class="sev-track"><div class="sev-fill" data-w="37"></div></div><span class="sev-count">31</span></div>
+      <div class="sev-row sev-medium"><span class="sev-label">Medium</span><div class="sev-track"><div class="sev-fill" data-w="28"></div></div><span class="sev-count">24</span></div>
+      <div class="sev-row sev-low"><span class="sev-label">Low</span><div class="sev-track"><div class="sev-fill" data-w="8"></div></div><span class="sev-count">7</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CVE -->
+<section class="section" id="cves">
+  <div class="page-wrap">
+    <div class="sec-label">// 03 cve database</div>
+    <div class="sec-title">Published <em>CVEs</em></div>
+    <p class="cve-note">
+      Fetching live from <strong>github.com/SCR-athif/CVE</strong> — only your real published CVEs are shown here.<br>
+      Add <code>CVE-XXXX-XXXXX.md</code> files to that repo to populate this section.
+    </p>
+    <div class="cve-row-controls">
+      <input class="cve-input" id="cve-search" placeholder="Search CVE ID or description…" oninput="filterCVEs()">
+      <button class="f-btn active" onclick="setCVEFilter(this,'all')">All</button>
+      <button class="f-btn" onclick="setCVEFilter(this,'critical')">Critical</button>
+      <button class="f-btn" onclick="setCVEFilter(this,'high')">High</button>
+      <button class="f-btn" onclick="setCVEFilter(this,'medium')">Medium</button>
+      <button class="f-btn" onclick="setCVEFilter(this,'low')">Low</button>
+    </div>
+    <div class="cve-list" id="cve-list"><div class="cve-empty">Fetching your CVEs from GitHub…</div></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section" id="projects">
+  <div class="page-wrap">
+    <div class="sec-label">// 04 projects &amp; research</div>
+    <div class="sec-title">Security <em>Tools</em></div>
+    <div class="projects-grid">
+      <div class="proj"><div class="proj-kind">TOOL</div><div class="proj-title">AuthBypass Framework</div><div class="proj-desc">OAuth 2.0 and JWT misconfiguration toolkit with automated token forging and scope escalation modules.</div><div class="proj-tags"><span class="proj-tag">OAuth</span><span class="proj-tag">JWT</span><span class="proj-tag">Python</span></div><button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button></div>
+      <div class="proj"><div class="proj-kind">TOOL</div><div class="proj-title">SubEnum Pro</div><div class="proj-desc">High-performance subdomain enumeration with CT log mining and automated subdomain takeover detection.</div><div class="proj-tags"><span class="proj-tag">Go</span><span class="proj-tag">Recon</span><span class="proj-tag">DNS</span></div><button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button></div>
+      <div class="proj"><div class="proj-kind">RESEARCH</div><div class="proj-title">SSRF → RCE Chain PoC</div><div class="proj-desc">Proof-of-concept for critical SSRF-to-RCE in cloud-hosted apps via chunked encoding WAF bypass.</div><div class="proj-tags"><span class="proj-tag">SSRF</span><span class="proj-tag">RCE</span><span class="proj-tag">WAF Bypass</span></div><button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button></div>
+      <div class="proj"><div class="proj-kind">RESEARCH</div><div class="proj-title">XSS Filter Evasion Lab</div><div class="proj-desc">DOM XSS research: prototype pollution chaining, mutation XSS in React and Angular frameworks.</div><div class="proj-tags"><span class="proj-tag">XSS</span><span class="proj-tag">DOM</span><span class="proj-tag">JavaScript</span></div><button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button></div>
+      <div class="proj"><div class="proj-kind">TOOL</div><div class="proj-title">APIHunter</div><div class="proj-desc">Automated scanner for hidden API endpoints, BOLA/IDOR, mass assignment, and rate limit bypasses.</div><div class="proj-tags"><span class="proj-tag">IDOR</span><span class="proj-tag">API</span><span class="proj-tag">Python</span></div><button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button></div>
+      <div class="proj"><div class="proj-kind">TOOL</div><div class="proj-title">Cloud Misconfiguration Mapper</div><div class="proj-desc">AWS S3, IAM, and Elasticsearch misconfiguration scanner across major cloud providers.</div><div class="proj-tags"><span class="proj-tag">AWS</span><span class="proj-tag">Cloud</span><span class="proj-tag">OSINT</span></div><button class="proj-link" onclick="window.open('https://github.com/SCR-athif','_blank')">github.com/SCR-athif →</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="section" id="blog">
+  <div class="page-wrap">
+    <div class="sec-label">// 05 writeups</div>
+    <div class="sec-title">Research <em>Writeups</em></div>
+    <div class="blog-list">
+      <div class="blog-row"><div><div class="blog-date">Mar 2025 · 12 min read</div><div class="blog-title">Chaining SSRF + IDOR to Achieve Full Account Takeover</div><div class="blog-tags"><span class="blog-tag">SSRF</span><span class="blog-tag">IDOR</span><span class="blog-tag">Account Takeover</span></div></div><div class="blog-arrow">→</div></div>
+      <div class="blog-row"><div><div class="blog-date">Jan 2025 · 8 min read</div><div class="blog-title">DOM XSS via Prototype Pollution in Angular 15</div><div class="blog-tags"><span class="blog-tag">XSS</span><span class="blog-tag">Angular</span><span class="blog-tag">PoC</span></div></div><div class="blog-arrow">→</div></div>
+      <div class="blog-row"><div><div class="blog-date">Nov 2024 · 15 min read</div><div class="blog-title">Breaking OAuth: From Misconfiguration to Admin RCE</div><div class="blog-tags"><span class="blog-tag">OAuth</span><span class="blog-tag">RCE</span><span class="blog-tag">Privilege Escalation</span></div></div><div class="blog-arrow">→</div></div>
+      <div class="blog-row"><div><div class="blog-date">Sep 2024 · 10 min read</div><div class="blog-title">Bug Bounty Recon Methodology: From Zero to Critical</div><div class="blog-tags"><span class="blog-tag">Methodology</span><span class="blog-tag">Recon</span><span class="blog-tag">Tutorial</span></div></div><div class="blog-arrow">→</div></div>
+      <div class="blog-row"><div><div class="blog-date">Jul 2024 · 6 min read</div><div class="blog-title">Mass Assignment Flaw: Taking Over 10,000 Accounts</div><div class="blog-tags"><span class="blog-tag">Mass Assignment</span><span class="blog-tag">API Security</span></div></div><div class="blog-arrow">→</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL -->
+<section class="section" id="terminal">
+  <div class="page-wrap">
+    <div class="sec-label">// 06 interactive terminal</div>
+    <div class="sec-title">Live <em>Shell</em></div>
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="tdot" style="background:#ff4757"></div>
+        <div class="tdot" style="background:#ffb300"></div>
+        <div class="tdot" style="background:#00e676"></div>
+        <span class="term-label">athif@seclab — bash</span>
+      </div>
+      <div class="term-body" id="term-body"></div>
+      <div class="term-input-row">
+        <span class="t-prompt">athif@seclab:~$&nbsp;</span>
+        <input class="term-inp" id="term-input" placeholder="type a command…" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+    <div class="term-hint">try: <span>help</span> · <span>whoami</span> · <span>skills</span> · <span>cves</span> · <span>bounties</span> · <span>contact</span> · <span>clear</span></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="page-wrap">
+    <div class="sec-label">// 07 contact</div>
+    <div class="sec-title">Get In <em>Touch</em></div>
+    <div class="contact-grid">
+      <div class="contact-col">
+        <div class="form-field"><label class="form-label">name</label><input class="form-inp" id="f-name" type="text" placeholder="Your name"></div>
+        <div class="form-field"><label class="form-label">email</label><input class="form-inp" id="f-email" type="email" placeholder="your@email.com"></div>
+        <div class="form-field"><label class="form-label">message</label><textarea class="form-inp" id="f-msg" placeholder="Describe your inquiry…"></textarea></div>
+        <button class="btn-send" id="send-btn" onclick="handleSend()">Send Message →</button>
+      </div>
+      <div class="contact-col">
+        <div class="info-list">
+          <div class="info-item"><div class="info-lbl">email</div><div class="info-val">athif@secresearch.io</div></div>
+          <div class="info-item"><div class="info-lbl">github</div><div class="info-val">github.com/SCR-athif</div></div>
+          <div class="info-item"><div class="info-lbl">response time</div><div class="info-val">Within 24 hours</div></div>
+          <div class="info-item"><div class="info-lbl">pgp key</div><div class="info-val">keybase.io/athif</div></div>
+        </div>
+        <div class="socials">
+          <button class="social-btn" onclick="window.open('https://github.com/SCR-athif','_blank')">GitHub</button>
+          <button class="social-btn">LinkedIn</button>
+          <button class="social-btn">HackerOne</button>
+          <button class="social-btn">Twitter / X</button>
+        </div>
       </div>
     </div>
   </div>
@@ -607,255 +443,113 @@ footer span.hl{color:var(--cyan)}
 
 <footer>
   <span>Mohammed <span class="hl">Athif</span> · Cybersecurity Researcher</span>
-  <span style="opacity:0.35">© 2025</span>
+  <span style="opacity:.3">© 2025</span>
 </footer>
 
-</div><!-- /wrap -->
-</div><!-- /outer -->
-
 <script>
-/* ─── HELPERS ─── */
-function scroll2(id){
-  const el = document.getElementById(id);
-  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
-}
+/* helpers */
+function go(id){const e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth',block:'start'})}
+function toggleMenu(){document.getElementById('mob').classList.toggle('open')}
+function closeMob(){document.getElementById('mob').classList.remove('open')}
 
-/* ─── TYPING EFFECT ─── */
-const phrases = [
-  "I break systems ethically to secure them.",
-  "Finding vulnerabilities before attackers do.",
-  "Turning bugs into better security.",
-  "Offensive mindset. Responsible disclosure."
-];
-let pi = 0, ci = 0, deleting = false;
-const tel = document.getElementById('typing-el');
-function tick() {
-  const p = phrases[pi];
-  const txt = deleting ? p.substring(0, ci--) : p.substring(0, ci++);
-  tel.innerHTML = txt + '<span class="cursor"></span>';
-  let d = deleting ? 35 : 68;
-  if (!deleting && ci > p.length) { d = 2200; deleting = true; }
-  else if (deleting && ci < 0) { deleting = false; pi = (pi + 1) % phrases.length; ci = 0; d = 300; }
-  setTimeout(tick, d);
+/* typing */
+const P=["I break systems ethically to secure them.","Finding vulnerabilities before attackers do.","Turning bugs into better security.","Offensive mindset. Responsible disclosure."];
+let pi=0,ci=0,del=false;
+const TEL=document.getElementById('tel');
+function tick(){
+  const p=P[pi];
+  TEL.innerHTML=(del?p.slice(0,ci--):p.slice(0,ci++))+'<span class="cursor"></span>';
+  let d=del?34:68;
+  if(!del&&ci>p.length){d=2200;del=true}
+  else if(del&&ci<0){del=false;pi=(pi+1)%P.length;ci=0;d=300}
+  setTimeout(tick,d);
 }
 tick();
 
-/* ─── STAT COUNTERS ─── */
-function animCount(el) {
-  const t = parseInt(el.dataset.t), dur = 1600;
-  const step = t / (dur / 16);
-  let c = 0;
-  const iv = setInterval(() => {
-    c = Math.min(c + step, t);
-    el.textContent = Math.floor(c) + '+';
-    if (c >= t) clearInterval(iv);
-  }, 16);
+/* counters */
+function runCount(el){
+  const t=+el.dataset.t,dur=1600,step=t/(dur/16);let c=0;
+  const iv=setInterval(()=>{c=Math.min(c+step,t);el.textContent=Math.floor(c)+'+';if(c>=t)clearInterval(iv)},16);
 }
-setTimeout(() => { document.querySelectorAll('.stat-n').forEach(animCount); }, 300);
+setTimeout(()=>document.querySelectorAll('.stat-n').forEach(runCount),350);
 
-/* ─── SEVERITY BARS ─── */
-setTimeout(() => {
-  document.querySelectorAll('.sev-fill').forEach(b => {
-    b.style.width = b.dataset.w + '%';
-  });
-}, 500);
+/* sev bars */
+setTimeout(()=>document.querySelectorAll('.sev-fill').forEach(b=>b.style.width=b.dataset.w+'%'),500);
 
-/* ─── CVE — REAL GITHUB DATA ONLY ─── */
-let allCVEs = [], cveFilter = 'all';
-
-async function loadCVEs() {
-  const list = document.getElementById('cve-list');
-  try {
-    const r = await fetch('https://api.github.com/repos/SCR-athif/CVE/contents/', {
-      headers: { Accept: 'application/vnd.github.v3+json' }
-    });
-    if (!r.ok) throw new Error('repo not found');
-    const files = await r.json();
-    const cveFiles = files.filter(f => f.name.match(/CVE-/i));
-    if (cveFiles.length === 0) {
-      list.innerHTML = `<div class="cve-empty">
-        No CVE files found in your GitHub repo.<br>
-        <span style="opacity:0.5;font-size:11px">
-          Create files named <code>CVE-XXXX-XXXXX.md</code> in github.com/SCR-athif/CVE
-        </span>
-      </div>`;
-      return;
+/* CVEs */
+let allCVEs=[],cveFil='all';
+async function loadCVEs(){
+  const list=document.getElementById('cve-list');
+  try{
+    const r=await fetch('https://api.github.com/repos/SCR-athif/CVE/contents/',{headers:{Accept:'application/vnd.github.v3+json'}});
+    if(!r.ok)throw 0;
+    const files=await r.json();
+    const cf=files.filter(f=>/CVE-/i.test(f.name));
+    if(!cf.length){list.innerHTML='<div class="cve-empty">No CVE files found in your GitHub repo.<br><span style="opacity:.5;font-size:11px">Add CVE-XXXX-XXXXX.md files to github.com/SCR-athif/CVE</span></div>';return}
+    const loaded=[];
+    for(const f of cf.slice(0,30)){
+      let desc='See full details on GitHub.',sev='medium';
+      try{const fr=await fetch(f.download_url);const txt=await fr.text();
+        const lines=txt.split('\n').map(l=>l.trim()).filter(l=>l&&!l.startsWith('#'));
+        if(lines.length)desc=lines[0].replace(/\*\*/g,'').slice(0,150)+(lines[0].length>150?'…':'');
+        const lo=txt.toLowerCase();
+        if(lo.includes('critical')||/cvss[:\s]+9\./.test(lo))sev='critical';
+        else if(lo.includes('high')||/cvss[:\s]+[78]\./.test(lo))sev='high';
+        else if(lo.includes('low'))sev='low';
+      }catch(_){}
+      loaded.push({id:f.name.replace(/\.(md|txt|json)$/i,''),desc,sev,url:f.html_url});
     }
-
-    /* read each file for description + severity */
-    const loaded = [];
-    for (const f of cveFiles.slice(0, 30)) {
-      let desc = 'See full details on GitHub.', sev = 'medium';
-      try {
-        const fr = await fetch(f.download_url);
-        const txt = await fr.text();
-        /* grab first non-empty non-heading line as description */
-        const lines = txt.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
-        if (lines.length) desc = lines[0].replace(/\*\*/g, '').substring(0, 140) + (lines[0].length > 140 ? '…' : '');
-        /* detect severity */
-        const lower = txt.toLowerCase();
-        if (lower.includes('critical') || lower.match(/cvss[:\s]+9\./)) sev = 'critical';
-        else if (lower.includes('high') || lower.match(/cvss[:\s]+[78]\./)) sev = 'high';
-        else if (lower.includes('low')) sev = 'low';
-        else sev = 'medium';
-      } catch (e) { /* keep defaults */ }
-      loaded.push({
-        id: f.name.replace(/\.(md|txt|json)$/i, ''),
-        desc, sev, url: f.html_url
-      });
-    }
-    allCVEs = loaded;
-    renderCVEs();
-  } catch (e) {
-    list.innerHTML = `<div class="cve-empty">
-      Could not fetch CVEs from <strong>github.com/SCR-athif/CVE</strong><br>
-      <span style="opacity:0.5;font-size:11px">Make sure the repo is public and contains CVE-*.md files</span>
-    </div>`;
+    allCVEs=loaded;renderCVEs();
+  }catch(_){
+    list.innerHTML='<div class="cve-empty">Could not fetch CVEs from <strong>github.com/SCR-athif/CVE</strong><br><span style="opacity:.5;font-size:11px">Make sure the repo is public and contains CVE-*.md files</span></div>';
   }
 }
-
-function filterCVEs() { renderCVEs(); }
-
-function setCVEFilter(btn, f) {
-  cveFilter = f;
-  document.querySelectorAll('.sev-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCVEs();
+function filterCVEs(){renderCVEs()}
+function setCVEFilter(btn,f){cveFil=f;document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCVEs()}
+function renderCVEs(){
+  const q=document.getElementById('cve-search').value.toLowerCase();
+  const filtered=allCVEs.filter(c=>(cveFil==='all'||c.sev===cveFil)&&(!q||c.id.toLowerCase().includes(q)||c.desc.toLowerCase().includes(q)));
+  const list=document.getElementById('cve-list');
+  if(!filtered.length){list.innerHTML='<div class="cve-empty">No CVEs match this filter.</div>';return}
+  list.innerHTML=filtered.map(c=>`<div class="cve-row"><span class="badge badge-${c.sev}">${c.sev}</span><div><div class="cve-id">${c.id}</div><div class="cve-desc">${c.desc}</div></div><button class="cve-link-btn" onclick="window.open('${c.url}','_blank')">GitHub →</button></div>`).join('');
 }
-
-function renderCVEs() {
-  const q = document.getElementById('cve-search').value.toLowerCase();
-  const filtered = allCVEs.filter(c => {
-    const mf = cveFilter === 'all' || c.sev === cveFilter;
-    const ms = !q || c.id.toLowerCase().includes(q) || c.desc.toLowerCase().includes(q);
-    return mf && ms;
-  });
-  const list = document.getElementById('cve-list');
-  if (!filtered.length) {
-    list.innerHTML = '<div class="cve-empty">No CVEs match this filter.</div>';
-    return;
-  }
-  list.innerHTML = filtered.map(c => `
-    <div class="cve-item">
-      <span class="badge badge-${c.sev}">${c.sev}</span>
-      <div>
-        <div class="cve-id">${c.id}</div>
-        <div class="cve-desc">${c.desc}</div>
-      </div>
-      <span class="cve-gh-link" onclick="window.open('${c.url}','_blank')">GitHub →</span>
-    </div>
-  `).join('');
-}
-
 loadCVEs();
 
-/* ─── TERMINAL ─── */
-const termBody  = document.getElementById('term-body');
-const termInput = document.getElementById('term-input');
-
-const CMDS = {
-  help: () => [
-    ['t-muted', 'Available commands:'],
-    ['t-white', '  whoami   · show identity'],
-    ['t-white', '  skills   · list technical skills'],
-    ['t-white', '  cves     · published CVE list'],
-    ['t-white', '  bounties · bug bounty summary'],
-    ['t-white', '  contact  · contact information'],
-    ['t-white', '  clear    · clear terminal'],
-  ],
-  whoami: () => [
-    ['t-muted', '───────────────────────────────'],
-    ['t-white', 'Name     Mohammed Athif'],
-    ['t-white', 'Role     Cybersecurity Researcher'],
-    ['t-white', 'Base     Kerala, India'],
-    ['t-cyan',  'Mission  Finding and fixing critical vulnerabilities'],
-    ['t-white', 'GitHub   github.com/SCR-athif'],
-    ['t-muted', '───────────────────────────────'],
-  ],
-  skills: () => [
-    ['t-amber', '[Web Security]'],
-    ['t-white', '  XSS · SQLi · IDOR · SSRF · CSRF · RCE · XXE · SSTI · LFI'],
-    ['t-amber', '[Tools]'],
-    ['t-white', '  Burp Suite · Nmap · FFUF · Metasploit · Nuclei · SQLMap'],
-    ['t-amber', '[Languages]'],
-    ['t-white', '  Python · JavaScript · Bash · Go'],
-    ['t-amber', '[Systems]'],
-    ['t-white', '  Linux · Kali · AWS · Docker'],
-  ],
-  cves: () => {
-    if (allCVEs.length === 0) return [['t-red', 'No CVEs loaded — check the CVE section above']];
-    return [
-      ['t-muted', 'Published CVEs:'],
-      ...allCVEs.slice(0, 10).map(c => [
-        c.sev === 'critical' ? 't-red' : c.sev === 'high' ? 't-amber' : 't-green',
-        `  ${c.id}  [${c.sev.toUpperCase()}]`
-      ])
-    ];
-  },
-  bounties: () => [
-    ['t-green', 'HackerOne  48 reports · Top 1000'],
-    ['t-green', 'Bugcrowd   23 reports · Trusted'],
-    ['t-green', 'Intigriti  11 reports · Active'],
-    ['t-muted',  '──────────────────────────────'],
-    ['t-white',  'Total: 87+ vulns · 23 Critical'],
-  ],
-  contact: () => [
-    ['t-cyan',  'Email    athif@secresearch.io'],
-    ['t-cyan',  'GitHub   github.com/SCR-athif'],
-    ['t-white', 'PGP      keybase.io/athif'],
-    ['t-muted', 'Response within 24 hours'],
-  ],
-  clear: () => null
+/* terminal */
+const TB=document.getElementById('term-body'),TI=document.getElementById('term-input');
+const CMDS={
+  help:()=>[['t-muted','Available commands:'],['t-white','  whoami · skills · cves · bounties · contact · clear']],
+  whoami:()=>[['t-muted','─────────────────────────────────'],['t-white','Name     Mohammed Athif'],['t-white','Role     Cybersecurity Researcher'],['t-white','Base     Kerala, India'],['t-cyan','Mission  Finding & fixing critical vulnerabilities'],['t-white','GitHub   github.com/SCR-athif'],['t-muted','─────────────────────────────────']],
+  skills:()=>[['t-amber','[Web Security]'],['t-white','  XSS · SQLi · IDOR · SSRF · CSRF · RCE · XXE · SSTI · LFI'],['t-amber','[Tools]'],['t-white','  Burp Suite · Nmap · FFUF · Metasploit · Nuclei · SQLMap'],['t-amber','[Languages]'],['t-white','  Python · JavaScript · Bash · Go'],['t-amber','[Systems]'],['t-white','  Linux · Kali · AWS · Docker']],
+  cves:()=>allCVEs.length?[['t-muted','Published CVEs:'],...allCVEs.slice(0,10).map(c=>[c.sev==='critical'?'t-red':c.sev==='high'?'t-amber':'t-green',`  ${c.id}  [${c.sev.toUpperCase()}]`])]:[['t-red','No CVEs loaded — check the CVE section above']],
+  bounties:()=>[['t-green','HackerOne  48 reports · Top 1000'],['t-green','Bugcrowd   23 reports · Trusted'],['t-green','Intigriti  11 reports · Active'],['t-muted','──────────────────────────────'],['t-white','Total: 87+ vulns · 23 Critical']],
+  contact:()=>[['t-cyan','Email    athif@secresearch.io'],['t-cyan','GitHub   github.com/SCR-athif'],['t-white','PGP      keybase.io/athif'],['t-muted','Response within 24 hours']],
+  clear:()=>null
 };
-
-function addLine(cls, txt) {
-  const d = document.createElement('div');
-  d.className = 't-line ' + cls;
-  d.textContent = txt;
-  termBody.appendChild(d);
-  termBody.scrollTop = termBody.scrollHeight;
-}
-function addPromptLine(cmd) {
-  const d = document.createElement('div');
-  d.className = 't-line';
-  d.innerHTML = `<span class="t-prompt">athif@seclab:~$</span> <span class="t-white">${cmd}</span>`;
-  termBody.appendChild(d);
-}
-
-/* boot message */
-addLine('t-muted', 'Type help for available commands.');
-
-termInput.addEventListener('keydown', e => {
-  if (e.key !== 'Enter') return;
-  const cmd = termInput.value.trim().toLowerCase();
-  termInput.value = '';
-  if (!cmd) return;
-  addPromptLine(cmd);
-  const fn = CMDS[cmd];
-  if (!fn) { addLine('t-red', `command not found: ${cmd}`); return; }
-  const out = fn();
-  if (out === null) { termBody.innerHTML = ''; return; }
-  out.forEach(([cls, txt]) => addLine(cls, txt));
+function addLine(cls,txt){const d=document.createElement('div');d.className='t-line '+cls;d.textContent=txt;TB.appendChild(d);TB.scrollTop=TB.scrollHeight}
+function addPrompt(cmd){const d=document.createElement('div');d.className='t-line';d.innerHTML=`<span class="t-prompt">athif@seclab:~$</span> <span class="t-white">${cmd}</span>`;TB.appendChild(d)}
+addLine('t-muted','Type help for available commands.');
+TI.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const cmd=TI.value.trim().toLowerCase();TI.value='';
+  if(!cmd)return;
+  addPrompt(cmd);
+  const fn=CMDS[cmd];
+  if(!fn){addLine('t-red',`command not found: ${cmd}`);return}
+  const out=fn();
+  if(out===null){TB.innerHTML='';return}
+  out.forEach(([cls,txt])=>addLine(cls,txt));
 });
 
-/* ─── CONTACT FORM ─── */
-function handleSend() {
-  const btn = document.getElementById('submit-btn');
-  btn.textContent = 'Sending...';
-  btn.style.opacity = '0.7';
-  setTimeout(() => {
-    btn.textContent = 'Message sent ✓';
-    btn.style.background = 'var(--green)';
-    btn.style.color = '#07090d';
-    btn.style.opacity = '1';
-    document.getElementById('f-name').value = '';
-    document.getElementById('f-email').value = '';
-    document.getElementById('f-msg').value = '';
-    setTimeout(() => {
-      btn.textContent = 'Send Message →';
-      btn.style.background = 'var(--cyan)';
-    }, 3000);
-  }, 1400);
+/* contact */
+function handleSend(){
+  const btn=document.getElementById('send-btn');
+  btn.textContent='Sending…';btn.style.opacity='.65';
+  setTimeout(()=>{
+    btn.textContent='Message sent ✓';btn.style.background='var(--green)';btn.style.color='#07090d';btn.style.opacity='1';
+    ['f-name','f-email','f-msg'].forEach(id=>document.getElementById(id).value='');
+    setTimeout(()=>{btn.textContent='Send Message →';btn.style.background='var(--cyan)'},3000);
+  },1400);
 }
 </script>
 </body>
